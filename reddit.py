@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify, Response
-import sqlite3
+from flask import Flask, request, jsonify, Response, abort
+import sqlite3, flask, time, datetime, random
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -77,5 +77,36 @@ def update_email():
     conn.commit()
     return Response(response_content, status=200, mimetype='application/json')
 
+
+@app.route('/api/v1/resources/post/all_post', methods=['GET'])
+def all_post():
+    conn = sqlite3.connect('post.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    all_post = cur.execute('SELECT * FROM userpost;').fetchall()
+    return jsonify(all_post)
+
+
+@app.route('/api/v1/resources/post', methods = ['POST'])
+def creat_post():
+    unix = time.time()
+    date = str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
+
+    data = request.get_json()
+    database = "post.db"
+    conn = sqlite3.connect(database)
+    cur = conn.cursor()
+
+    title = data['title']
+    text = data['text']
+    community = data['community']
+    username = data['username']
+    url = data['url']
+    cur.execute('''INSERT INTO userpost (title,text,community,url,username,date)
+                    VALUES(?,?,?,?,?,?)''',(title, text, community, url,username, date))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify("success!")
 
 app.run()
