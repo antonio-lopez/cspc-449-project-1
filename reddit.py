@@ -11,10 +11,12 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>Reddit</h1>
 <p>WeLcOmE tO rEdDiT</p>'''
+
 
 @app.route('/api/v1/resources/users/all', methods=['GET'])
 def api_all():
@@ -25,9 +27,11 @@ def api_all():
 
     return jsonify(all_users)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
 
 @app.route('/api/v1/resources/users/all', methods=['POST'])
 def create_user():
@@ -35,7 +39,7 @@ def create_user():
     Email = request_json.get('Email')
     User = request_json.get('User')
     Karma = request_json.get('Karma')
-    
+
     # query_parameters = request.args
     # Email = query_parameters.get('Email')
     # User = query_parameters.get('User')
@@ -51,14 +55,15 @@ def create_user():
     # if Karma:
     #     # query += ' author=? AND'
     #     to_filter.append(Karma)
-    
+
     conn = sqlite3.connect('useraccount.db')
     cur = conn.cursor()
 
-    response_content = cur.execute("INSERT INTO useraccount VALUES(?,?,?)", (Karma,User,Email))
+    response_content = cur.execute("INSERT INTO useraccount VALUES(?,?,?)", (Karma, User, Email))
     conn.commit()
     # return jsonify(response_content)
-    return Response(response_content,status=201,mimetype='application/json')
+    return Response(response_content, status=201, mimetype='application/json')
+
 
 @app.route('/api/v1/resources/users/email', methods=['PUT'])
 def update_email():
@@ -70,6 +75,7 @@ def update_email():
     cur = conn.cursor()
     response_content = cur.execute("UPDATE useraccount SET Email=? WHERE User=?", (Email, User))
     conn.commit()
-    return Response(response_content,status=200,mimetype='application/json')
-    
+    return Response(response_content, status=200, mimetype='application/json')
+
+
 app.run()
