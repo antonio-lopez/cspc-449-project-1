@@ -87,7 +87,7 @@ def all_post():
     return jsonify(all_post)
 
 
-@app.route('/api/v1/resources/post', methods = ['POST'])
+@app.route('/api/v1/resources/post/create_post', methods=['POST'])
 def creat_post():
     unix = time.time()
     date = str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
@@ -103,10 +103,47 @@ def creat_post():
     username = data['username']
     url = data['url']
     cur.execute('''INSERT INTO userpost (title,text,community,url,username,date)
-                    VALUES(?,?,?,?,?,?)''',(title, text, community, url,username, date))
+                    VALUES(?,?,?,?,?,?)''', (title, text, community, url, username, date))
     conn.commit()
     cur.close()
     conn.close()
-    return jsonify("success!")
+    return jsonify({'message': 'create ' + title + ' post success!'})
+
+
+@app.route('/api/v1/resources/post/delete_post', methods=['POST'])
+def delete_post():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        postId = data['postId']
+        cur.execute('''DELETE FROM userpost 
+                        WHERE postId=?;''', (postId,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'delete successfully'})
+    except Exception as e:
+        return jsonify(str(e))
+
+
+@app.route('/api/v1/resources/post/retrieve_post', methods=['POST'])
+def retrieve_post():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        postId = data['postId']
+        post = cur.execute('''SELECT * FROM userpost 
+                        WHERE postId=?;''', (postId,)).fetchall()
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify(post)
+    except Exception as e:
+        return jsonify(str(e))
+
 
 app.run()
