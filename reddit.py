@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, jsonify, Response, abort
 import sqlite3, flask, time, datetime, random
 
@@ -85,8 +87,9 @@ def retrieve_post():
     except Exception as e:
         return jsonify(str(e))
 
-@app.route('/api/v1/resources/post/listNthIntoCommunity', methods=['POST'])
-def listNthIntoCommunity():
+
+@app.route('/api/v1/resources/post/listNthToACommunity', methods=['POST'])
+def listNthToACommunity():
     data = request.get_json()
     database = "post.db"
     try:
@@ -94,25 +97,74 @@ def listNthIntoCommunity():
         cur = conn.cursor()
         nth = data['nth']
         thisCom = data['community']
-        post = cur.execute('''WITH myTableWithRows AS (
-            SELECT (ROW_NUMBER() OVER (ORDER BY userpost.date DESC)) as row,*
-            FROM userpost)
-            SELECT * FROM myTableWithRows WHERE row <= ?''', (nth,)).fetchall()
+        # post = cur.execute('''WITH myTableWithRows AS (
+        #     SELECT (ROW_NUMBER() OVER (ORDER BY userpost.date DESC)) as row,*
+        #     FROM userpost)
+        #     SELECT * FROM myTableWithRows WHERE row <= ?''', (nth,)).fetchall()
 
+        post = cur.execute('''SELECT * FROM userpost 
+                WHERE community = ? 
+                ORDER by userpost.date DESC 
+                LIMIT ?''', (thisCom,nth)).fetchall()
+
+        myList = []
         for i in range(nth):
-            unix = time.time()
-            date = str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
-            thisTitle = post[i][2]
-            thisText = post[i][3]
-            thisUrl = post[i][5]
-            thisUsername = post[i][6]
-            cur.execute('''INSERT INTO userpost (title,text,community,url,username,date)
-                                VALUES(?,?,?,?,?,?)''', (thisTitle, thisText, thisCom, thisUrl, thisUsername, date))
-
+            thisPostId = post[i][0]
+            thisTitle = post[i][1]
+            thisUsername = post[i][4]
+            thisDate = post[i][6]
+            iPost = {
+                "postId" : thisPostId,
+                "title" : thisTitle,
+                "community" : thisCom,
+                "username" : thisUsername,
+                "date" : thisDate
+            }
+            myList.append(iPost)
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify(post)
+        return jsonify(myList)
+    except Exception as e:
+        return jsonify(str(e))
+
+
+@app.route('/api/v1/resources/post/listNthToAny', methods=['POST'])
+def listNthToAny():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        nth = data['nth']
+        # post = cur.execute('''WITH myTableWithRows AS (
+        #     SELECT (ROW_NUMBER() OVER (ORDER BY userpost.date DESC)) as row,*
+        #     FROM userpost)
+        #     SELECT * FROM myTableWithRows WHERE row <= ?''', (nth,)).fetchall()
+
+        post = cur.execute('''SELECT * FROM userpost 
+                ORDER by userpost.date DESC 
+                LIMIT ?''', (nth,)).fetchall()
+
+        myList = []
+        for i in range(nth):
+            thisPostId = post[i][0]
+            thisTitle = post[i][1]
+            thisCom = post[i][3]
+            thisUsername = post[i][4]
+            thisDate = post[i][6]
+            iPost = {
+                "postId" : thisPostId,
+                "title" : thisTitle,
+                "community" : thisCom,
+                "username" : thisUsername,
+                "date" : thisDate
+            }
+            myList.append(iPost)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify(myList)
     except Exception as e:
         return jsonify(str(e))
 
