@@ -1,0 +1,58 @@
+User Microservice
+- all requests work
+
+Errors:
+
+-return responses as JSON, perhaps use Zexin's example
+return jsonify({'message': 'delete successfully'})
+
+creating new account api:
+Error - a long response_content error is outputted when creating a user with the same username or email
+Solution - upon connecting to the database check first if the username and email exists. If either one exists then return an error status (HTTP 409 Conflict) and close connection
+
+deactivate account api:
+Error - a HTTP 200 OK status is returned even when you enter a username that is not in the database
+      - no user is deleted from the database
+Solution - upon connecting to the database check first if the username exists, if username does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+updating email api:
+Error - a HTTP 200 OK status is returned even when you enter a username that is not in the database
+      - no user is added to the database
+Solution - upon connecting to the database check first if the username exists, if username does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+incrementing karma api:
+Error - a HTTP 200 OK status is returned even when you enter a username that is not in the database
+      - no user karma is updated in the database
+Solution - upon connecting to the database check first if the username exists, if username does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+decrementing karma api:
+Error - a HTTP 200 OK status is returned even when you enter a username that is not in the database
+      - no user karma is updated in the database
+Solution - upon connecting to the database check first if the username exists, if username does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+===================================================================================================
+
+Post Microservice
+- all requests work
+- Create Post API - pass 
+
+Errors:
+
+delete existing post api:
+Error - an HTTP 200 OK status is returned along with a JSON output "message": "delete successfully" even though the postID does not exist.
+Solution: upon connecting to the database check first if the postID exists, if it does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+retrieve a post api:
+Error - an HTTP 200 OK status is returned along with an empty list "[]" even though the postID does not exist.
+Solution: upon connecting to the database check first if the postID exists, if it does not exists then return an error status (HTTP 404 Not Found) and close connection
+
+list the nth most recent posts to a particular community api:
+Error - an HTTP 200 OK status is returned along with "list index out of range" when a community that does not exist in the databse is requested
+      - an HTTP 200 OK status is returned along with "list index out of range" when a given nth number that is larger than the number of posts in the database is requested
+Solution - upon connecting to the database check first if the community exists and if the given nth number is less than or equal to the number of posts in the database 
+         - if neither is valid/true then return an error status (HTTP 404 Not Found) and close connection
+
+list the n most recent posts to any community api:
+Error - an HTTP 200 OK status is returned along with "list index out of range" when a given nth number that is larger than the number of posts in the database is requested 
+Solution - upon connecting to the database check first if the given nth number is less than or equal to the number of posts in the database, 
+	if it is not valid then return an error status (HTTP 404 Not Found) and close connection
