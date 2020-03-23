@@ -1,0 +1,15 @@
+create a virtual environment:
+
+python3 -m venv env
+
+activate the virtual environment:
+
+source ENV/bin/activate
+
+create database, run python file:
+
+python3 create_db.py
+
+install requirements:
+
+pip install -r requirements.txt
