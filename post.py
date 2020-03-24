@@ -16,7 +16,7 @@ def dict_factory(cursor, row):
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>Reddit</h1>
-<p>WeLcOmE tO rEdDiT</p>'''
+<p>Post API</p>'''
 
 
 @app.route('/api/v1/resources/post/all_post', methods=['GET'])
@@ -168,4 +168,5 @@ def listNthToAny():
         return jsonify(str(e))
 
 
-app.run()
+if __name__ == '__main__':
+    app.run()

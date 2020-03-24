@@ -1,3 +1,15 @@
+create a directory:
+
+mkdir reddit_clone
+
+change the current directory:
+
+cd reddit_clone/
+
+clone repository:
+
+git clone "URL"
+
 create a virtual environment:
 
 python3 -m venv env
@@ -10,6 +22,8 @@ create database, run python file:
 
 python3 create_db.py
 
-install requirements:
+Open terminal and run shell script to download and install requirements:
 
-pip install -r requirements.txt
+$ requirements.sh
+
+[still working on it]

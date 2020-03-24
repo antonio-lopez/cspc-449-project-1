@@ -1,0 +1,19 @@
+http://localhost:2015/posts {
+    root /home/student/449_Projects/
+    proxy / 127.0.0.1:5000 127.0.0.1:5001 127.0.0.1:5002 {
+		policy round_robin
+		fail_timeout 15s
+		max_fails 4
+		transparent
+    }
+}
+
+http://localhost:2015/users {
+    root /home/student/449_Projects/
+    proxy / 127.0.0.1:5100 127.0.0.1:5101 127.0.0.1:5102 {
+		policy round_robin
+		fail_timeout 15s
+		max_fails 4
+		transparent
+    }
+}

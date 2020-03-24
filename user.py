@@ -14,7 +14,7 @@ def dict_factory(cursor, row):
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>Reddit</h1>
-<p>WeLcOmE tO rEdDiT</p>'''
+<p>User API</p>'''
 
 @app.route('/api/v1/resources/users/all', methods=['GET'])
 def api_all():
@@ -116,4 +116,6 @@ def update_email():
     conn.commit()
     return Response(response_content,status=200,mimetype='application/json')
     
-app.run()
+
+if __name__ == '__main__':
+    app.run()
