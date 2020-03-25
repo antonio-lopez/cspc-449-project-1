@@ -1,29 +1,75 @@
-create a directory:
+Create a directory:
 
-mkdir reddit_clone
+$ mkdir reddit_clone
 
-change the current directory:
+Change the current directory:
 
-cd reddit_clone/
+$ cd reddit_clone/
 
-clone repository:
+Clone repository:
 
-git clone "URL"
+$ git clone https://github.com/antonio-lopez/cspc-449-project-1.git
 
-create a virtual environment:
+Create a virtual environment:
 
-python3 -m venv env
+$ python3 -m venv ENV
 
-activate the virtual environment:
+Activate the virtual environment:
 
-source ENV/bin/activate
+$ source ENV/bin/activate
 
-create database, run python file:
+Create the database by running the python file:
 
 python3 create_db.py
 
-Open terminal and run shell script to download and install requirements:
+Run shell script to download and install requirements:
 
-$ requirements.sh
+$ bash requirements.sh
 
-[still working on it]
+======================================================================
+
+Testing (Non-production):
+Run the Post microservice:
+
+$ python3 post.py
+
+Open a new terminal, change to the testing directory, and run the Post testing shell script:
+
+$ cd testing_non-prod/
+$ bash post_test.sh
+
+Cancel the Post microservice and run the User microservice:
+
+python3 user.py
+
+Cancel the Post testing shell script and run the User testing shell script:
+
+$ bash user_test.sh (still needs to be made)
+
+======================================================================
+
+Testing (Production):
+
+Open 4 terminals
+
+On one terminal run Foreman for the Post microservice:
+
+$ foreman start -m posts=3
+
+On the second terminal run Foreman for the User microservice:
+
+$ foreman start -m users=3
+
+On the third terminal run the Caddyfile:
+
+$ ulimit -n 8192 && caddy
+
+On the fourth terminal change to the testing_prod directory
+and run the Post testing shell script:
+
+$ cd testing_prod/
+$ bash post_test.sh
+
+Cancel the Post testing shell script and run the User testing shell script:
+
+$ bash user_test.sh (still needs to be made)
