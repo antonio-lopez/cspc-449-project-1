@@ -36,21 +36,15 @@ def create_user():
     User = request_json.get('username')
     Karma = request_json.get('karma')
     
-    if not Email:
-        page_not_found(404)
-    elif not User:
-        page_not_found(404)
-    else:
+    try:
         conn = sqlite3.connect('redditDB.db')
         cur = conn.cursor()
-        # exist = cur.execute("Select Exists(SELECT Email FROM user WHERE Email=?", (Email))
-        # if exist != 1:
-        response_content = cur.execute("INSERT INTO user_tbl VALUES(?,?,?)", (User, Email, Karma))
+        cur.execute("INSERT INTO user_tbl VALUES(?,?,?)", (User, Email, Karma))
         conn.commit()
-            #return jsonify(response_content)
-        return Response(response_content,status=201,mimetype='application/json')
-        # else:
-        #     page_not_found(404)
+        return jsonify(message='User added successfully.'), 201 
+    except:
+        return jsonify(message='Username or mail already exists.'), 409
+
 
 
 @app.route('/api/v1/resources/users/remove', methods=['DELETE'])
