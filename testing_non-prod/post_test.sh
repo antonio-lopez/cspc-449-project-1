@@ -1,4 +1,4 @@
-#create post
+#Create a new post
 echo "Creating post...."
 curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/create_post' \
 --header 'Content-Type: application/json' \
@@ -41,27 +41,30 @@ curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/crea
 --data-raw '{"community": "Water", "text": "Drink lots of water fam.", "title": "Water Rules", "url": "null", "username": "Bill"}' \
 --write-out '%{http_code}\n'
 
+#Delete an existing post
 echo "Deleting postId = 6...."
 curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/delete_post' \
 --header 'Content-Type: application/json' \
 --data-raw '{"postId": "6"}' \
 --write-out '%{http_code}\n'
 
+#Retrieve an existing post
 echo "Retrieving postId = 3...."
 curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/retrieve_post' \
 --header 'Content-Type: application/json' \
 --data-raw '{"postId": "3"}' \
 --write-out '%{http_code}\n'
 
+#List the n most recent posts to a particular community
 echo "Listing 2 posts from the Computer community...."
 curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/listNthToACommunity' \
 --header 'Content-Type: application/json' \
 --data-raw '{"nth": 2,"community": "Computer"}' \
 --write-out '%{http_code}\n'
 
+#List the n most recent posts to any community
 echo "Listing 5 posts from all communities...."
 curl --location --request POST 'http://127.0.0.1:5000/api/v1/resources/post/listNthToAny' \
 --header 'Content-Type: application/json' \
 --data-raw '{"nth": 5}' \
 --write-out '%{http_code}\n'
-

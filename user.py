@@ -24,10 +24,7 @@ def api_all():
     all_users = cur.execute('SELECT * FROM user_tbl;').fetchall()
 
     return jsonify(all_users)
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+    
 
 @app.route('/api/v1/resources/users/create', methods=['POST'])
 def create_user():
@@ -41,7 +38,9 @@ def create_user():
         cur = conn.cursor()
         cur.execute("INSERT INTO user_tbl VALUES(?,?,?)", (User, Email, Karma))
         conn.commit()
-        return jsonify(message='User added successfully.'), 201 
+        cur.close()
+        conn.close()
+        return jsonify(message=User + ' was added successfully.'), 201 
     except:
         return jsonify(message='Username or mail already exists.'), 409
 
@@ -57,40 +56,51 @@ def delete_user():
         cur = conn.cursor()
         cur.execute("DELETE FROM user_tbl WHERE username=?", (User,))
         conn.commit()
-        return jsonify(message='User successfully deleted.'), 200
+        cur.close()
+        conn.close()
+        return jsonify(message=User + ' was sucessfully deleted.'), 200
     except:
-        return jsonify(message='User does not exist.'), 404  
+        return jsonify(message='Username does not exists'), 404
 
 
 @app.route('/api/v1/resources/users/inc', methods=['PUT'])
 def increment_karma():
+    # get user name you want to delete
     request_json = request.get_json()
     User = request_json.get('username')
+
     try:
+        # connect to the database
         conn = sqlite3.connect('redditDB.db')
         cur = conn.cursor()
+        #inc karma
         cur.execute("UPDATE user_tbl SET Karma= Karma+1 WHERE username=?", (User,))
         conn.commit()
-        return jsonify(message='User karma successfully incremented.'), 200
+        cur.close()
+        conn.close()
+        return jsonify(message='Karma incremented'), 200
     except:
-        return jsonify(message='User does not exist.'), 404  
-
+        return jsonify(message='Username does not exists'), 404
 
 
 @app.route('/api/v1/resources/users/dec', methods=['PUT'])
 def decrement_karma():
+    # get user name you want to delete
     request_json = request.get_json()
     User = request_json.get('username')
 
     try:
+        # connect to the database
         conn = sqlite3.connect('redditDB.db')
         cur = conn.cursor()
+        #dec karma
         cur.execute("UPDATE user_tbl SET Karma= Karma-1 WHERE username=?", (User,))
         conn.commit()
-        return jsonify(message='User karma successfully decremented.'), 200
+        cur.close()
+        conn.close()
+        return jsonify(message='Karma decremented'), 200
     except:
-        return jsonify(message='User does not exist.'), 404 
-
+        return jsonify(message='Username does not exists'), 404
 
 
 @app.route('/api/v1/resources/users/email', methods=['PUT'])
@@ -104,10 +114,11 @@ def update_email():
         cur = conn.cursor()
         cur.execute("UPDATE user_tbl SET Email=? WHERE username=?", (Email, User))
         conn.commit()
-        return jsonify(message='User email successfully updated.'), 200
+        cur.close()
+        conn.close()
+        return jsonify(message='Email updated.'), 200
     except:
-        return jsonify(message='User does not exist.'), 404 
-
+        return jsonify(message='Username does not exists'), 404
     
 
 if __name__ == '__main__':
