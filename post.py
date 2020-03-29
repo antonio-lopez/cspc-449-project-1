@@ -51,7 +51,7 @@ def creat_post():
     return jsonify({'message': 'create ' + title + ' post success!'})
 
 
-@app.route('/api/v1/resources/post/delete_post', methods=['POST'])
+@app.route('/api/v1/resources/post/delete_post', methods=['DELETE'])
 def delete_post():
     data = request.get_json()
     database = "redditDB.db"
@@ -69,7 +69,7 @@ def delete_post():
         return jsonify(str(e))
 
 
-@app.route('/api/v1/resources/post/retrieve_post', methods=['POST'])
+@app.route('/api/v1/resources/post/retrieve_post', methods=['GET'])
 def retrieve_post():
     data = request.get_json()
     database = "redditDB.db"
@@ -87,7 +87,7 @@ def retrieve_post():
         return jsonify(str(e))
 
 
-@app.route('/api/v1/resources/post/listNthToACommunity', methods=['POST'])
+@app.route('/api/v1/resources/post/listNthToACommunity', methods=['GET'])
 def listNthToACommunity():
     data = request.get_json()
     database = "redditDB.db"
@@ -128,7 +128,7 @@ def listNthToACommunity():
         return jsonify(str(e))
 
 
-@app.route('/api/v1/resources/post/listNthToAny', methods=['POST'])
+@app.route('/api/v1/resources/post/listNthToAny', methods=['GET'])
 def listNthToAny():
     data = request.get_json()
     database = "redditDB.db"

@@ -42,25 +42,25 @@ curl --location --request POST 'http://localhost:2015/posts/api/v1/resources/pos
 --write-out '%{http_code}\n'
 
 echo "Deleting postId = 6...."
-curl --location --request POST 'http://localhost:2015/posts/api/v1/resources/post/delete_post' \
+curl --location --request DELETE 'http://localhost:2015/posts/api/v1/resources/post/delete_post' \
 --header 'Content-Type: application/json' \
---data-raw '{"postId": "6"}' \
+--data-raw '{"postId": "2"}' \
 --write-out '%{http_code}\n'
 
 echo "Retrieving postId = 3...."
-curl --location --request POST 'http://localhost:2015/posts/api/v1/resources/post/retrieve_post' \
+curl --location --request GET 'http://localhost:2015/posts/api/v1/resources/post/retrieve_post' \
 --header 'Content-Type: application/json' \
 --data-raw '{"postId": "3"}' \
 --write-out '%{http_code}\n'
 
 echo "Listing 2 posts from the Computer community...."
-curl --location --request POST 'http://localhost:2015/posts/api/v1/resources/post/listNthToACommunity' \
+curl --location --request GET 'http://localhost:2015/posts/api/v1/resources/post/listNthToACommunity' \
 --header 'Content-Type: application/json' \
 --data-raw '{"nth": 2,"community": "Computer"}' \
 --write-out '%{http_code}\n'
 
 echo "Listing 5 posts from all communities...."
-curl --location --request POST 'http://localhost:2015/posts/api/v1/resources/post/listNthToAny' \
+curl --location --request GET 'http://localhost:2015/posts/api/v1/resources/post/listNthToAny' \
 --header 'Content-Type: application/json' \
 --data-raw '{"nth": 5}' \
 --write-out '%{http_code}\n'
