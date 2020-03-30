@@ -11,3 +11,4 @@ Python Reddit clone
 3. Zexin Zhuang - zexinzhuang@csu.fullerton.edu
 
 4. Nathaniel Richards - nathrich23@csu.fullerton.edu
+
