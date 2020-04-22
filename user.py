@@ -120,45 +120,6 @@ def update_email():
     except:
         return jsonify(message='Username does not exists'), 404
     
-@app.route('api/v1/resources/message', methods=['POST'])
-def send_message():
-        unix = time.time()
-        Date = str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
-        request_json = request.get_json()
-        UserTo = request_json.get('userto')
-        UserFrom = request_json.get('userfrom')
-        MessageContents = request_json.get('messagecontents')
-        MessageFlag = request_json.get('messageflag')
-        conn = sqlite3.connect('redditDB.db')
-        cur = conn.cursor()
-        cur.execute("INSERT INTO message_tbl VALUES(?,?,?,?,?)", (UserTo, UserFrom, MessageContents, MessageFlag, Date))
-        cur.close()
-        conn.close()
-        return jsonify(message='Message Sent.'), 200
-
-@app.route('api/v1/resources/message/delete', methods=['DELETE'])
-def delete_message():
-    request_json = request.get_json()
-    MessageID = request_json.get('messageid')
-    conn = sqlite3.connect('redditDB.db')
-    cur = conn.cursor()
-    cur.execute("DELETE FROM message_tbl WHERE messageid=?", (MessageID,))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify(message='Message Deleted.'), 200
-
-@app.route('api/v1/resources/message/favorite', methods=['GET'])
-def favorite_message():
-    request_json = request.get_json()
-    MessageFlag = request_json.get('messageflag')
-    conn = sqlite3.connect('redditDB.db')
-    cur = conn.cursor()
-    Message = cur.execute("SELECT * FROM message_tbl WHERE messageflag=?", (MessageFlag,)).fetchall()
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify(Message)
 
 if __name__ == '__main__':
     app.run()
