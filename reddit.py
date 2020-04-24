@@ -169,4 +169,131 @@ def listNthToAny():
         return jsonify(str(e))
 
 
+# VOTING MICROSERVICE
+@app.route('/api/v1/resources/post/upvote', methods=['POST'])
+def upvote():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        postId = data['postId']
+        cur.execute('''UPDATE userpost SET upvotes = upvotes + 1  
+                            WHERE postId = ?;''', (postId,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'upvote successfully'})
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route('/api/v1/resources/post/downvote', methods=['POST'])
+def downvote():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        postId = data['postId']
+        cur.execute('''UPDATE userpost SET downvotes = downvotes + 1  
+                            WHERE postId = ?;''', (postId,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'downvote successfully'})
+    except Exception as e:
+        return jsonify(str(e))
+
+
+@app.route('/api/v1/resources/post/retrieve_vote', methods=['POST'])
+def retrieve_vote():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        postId = data['postId']
+        post = cur.execute('''SELECT upvotes, downvotes FROM userpost
+                            WHERE postId = ?;''', (postId,)).fetchall()
+        vote = {
+            "upvotes" : post[0][0],
+            "downvotes" : post[0][1],
+            "postId" : postId
+        }
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify(vote)
+    except Exception as e:
+        return jsonify(str(e))
+
+
+@app.route('/api/v1/resources/post/topNthScore', methods=['POST'])
+def topNthScore():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        nth = data['nth']
+        post = cur.execute('''SELECT * FROM userpost
+                                ORDER by (upvotes - downvotes) DESC
+                                LIMIT ?;''', (nth,)).fetchall()
+
+        myList = []
+        for i in range(nth):
+            thisPostId = post[i][0]
+            thisTitle = post[i][1]
+            thisUsername = post[i][4]
+            thisDate = post[i][6]
+            thisUpvotes = post[i][7]
+            thisDownvotes = post[i][8]
+            iPost = {
+                "postId":thisPostId,
+                "title":thisTitle ,
+                "community":thisUsername ,
+                "username": thisUsername,
+                "date":thisDate,
+                "upvotes" : thisUpvotes,
+                "downvotes" : thisDownvotes
+            }
+            myList.append(iPost)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify(myList)
+    except Exception as e:
+        return jsonify(str(e))
+
+
+@app.route('/api/v1/resources/post/sortedByScore', methods=['POST'])
+def sortedByScore():
+    data = request.get_json()
+    database = "post.db"
+    try:
+        conn = sqlite3.connect(database)
+        cur = conn.cursor()
+        posts = data['list']
+        post = posts.split(",")
+        print(len(post))
+
+        dict = {}
+        myList = ""
+        for i in range (len(post)):
+            postId = post[i]
+            score = cur.execute('''SELECT (upvotes - downvotes) FROM userpost WHERE postId = ?''', (postId,)).fetchall()
+            dict[postId] = score[0][0]
+        print(sorted(dict.items(), key = lambda kv: (kv[1], kv[0]), reverse = True))
+        for i in (sorted(dict.items(), key = lambda kv: (kv[1], kv[0]), reverse = True)):
+            myList = myList + i[0] + ","
+        if (len(myList) != 0):
+            myList = myList[:-1]
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"sorted list" : myList})
+    except Exception as e:
+        return jsonify(str(e))
+
+
 app.run()
