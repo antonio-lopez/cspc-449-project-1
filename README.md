@@ -1,4 +1,4 @@
-# CPSC 449 Project 1
+# CPSC 449 Project
 
 Python Reddit clone
 
