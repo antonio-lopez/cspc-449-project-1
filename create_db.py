@@ -10,12 +10,22 @@ conn.execute('''CREATE TABLE userpost_tbl
          community  TEXT   NOT NULL,
          url    TEXT,
          username   TEXT   NOT NULL,
-         date   TEXT    NOT NULL);''')
+         date   TEXT    NOT NULL,
+         upvotes	INTEGER NOT NULL DEFAULT 0,
+	     downvotes	INTEGER NOT NULL DEFAULT 0);''')
 
 conn.execute('''CREATE TABLE user_tbl
          (username  TEXT   NOT NULL UNIQUE,
          email  TEXT NOT NULL UNIQUE,
          karma  INTEGER NOT NULL);''')
+
+conn.execute('''CREATE TABLE message_tbl
+         (messageid INTEGER PRIMARY KEY UNIQUE,
+         userto  TEXT   NOT NULL UNIQUE,
+         userfrom   TEXT   NOT NULL UNIQUE,
+         messagecontents  TEXT   NOT NULL,
+         messageflag    TEXT NOT NULL,
+         date   TEXT    NOT NULL);''')
 
 print("Database created successfully")
 
