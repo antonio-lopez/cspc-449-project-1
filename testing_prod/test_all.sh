@@ -166,6 +166,6 @@ curl --location --request GET 'http://localhost:2015/votes/api/v1/resources/post
 echo "Retrieving post with identifiers...."
 curl --location --request GET 'http://localhost:2015/votes/api/v1/resources/post/sortedByScore' \
 --header 'Content-Type: application/json' \
---data-raw '{"list":"1,2"}' \
+--data-raw '{"list":"6,7"}' \
 --write-out '%{http_code}\n'
 
